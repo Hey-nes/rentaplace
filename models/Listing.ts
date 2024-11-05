@@ -1,19 +1,15 @@
-import mongoose, { Schema, Document } from "mongoose";
+// models/Listing.js
+import mongoose from 'mongoose';
 
-export interface IListing extends Document {
-  name: string;
-  description: string;
-  location: string;
-  pricePerNight: number;
-  availability: boolean;
-}
-
-const ListingSchema: Schema = new Schema({
+const listingSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
-  location: { type: String, required: true },
+  city: { type: String, required: true },
   pricePerNight: { type: Number, required: true },
-  availability: { type: Boolean, default: true },
+  availability: { type: Boolean, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Reference to the User model
 });
 
-export default mongoose.model<IListing>("Listing", ListingSchema);
+const Listing = mongoose.models.Listing || mongoose.model('Listing', listingSchema);
+
+export default Listing;

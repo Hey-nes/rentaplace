@@ -32,4 +32,6 @@ const BookingSchema: Schema = new Schema({
   property: { type: Schema.Types.ObjectId, ref: 'Listing', required: true },
 });
 
-export default mongoose.model<IBooking>('Booking', BookingSchema);
+const Booking = mongoose.models.Booking || mongoose.model<IBooking>("Booking", BookingSchema);
+
+export default Booking
