@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const token = jwt.sign({ id: user._id }, jwtSecret, {
+    const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, jwtSecret, {
       expiresIn: "1h",
     });
 
