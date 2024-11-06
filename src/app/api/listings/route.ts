@@ -3,12 +3,14 @@ import connectToDatabase from "../../../../lib/mongodb";
 import Listing from "../../../../models/Listing";
 import jwt from "jsonwebtoken";
 
+// GET request to fetch all listings
 export async function GET() {
   await connectToDatabase();
   const listings = await Listing.find({});
   return NextResponse.json(listings);
 }
 
+// POST request to create new listing
 export async function POST(request: Request) {
   const token = request.headers.get("Authorization")?.split(" ")[1];
 

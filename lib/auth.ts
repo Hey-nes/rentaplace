@@ -14,7 +14,6 @@ export const loginUser = (token: string) => {
 };
 
 export const logoutUser = () => {
-  const userId = localStorage.getItem("userId"); // Retrieve the user ID
   localStorage.removeItem("token");
   localStorage.removeItem("userId");
   console.log("Logout successful");
