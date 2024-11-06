@@ -29,9 +29,12 @@ const LoginPage = () => {
 
       if (token && loginUser(token)) {
         router.push("/");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1);
       } else console.error("Login failed");
     } catch (err: any) {
-      console.error("An error occurred", err);
+      console.error("An error occurred");
     }
   };
 
@@ -44,7 +47,7 @@ const LoginPage = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border border-gray-300 rounded placeholder-gray-600"
+          className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
           required
         />
         <input
@@ -52,7 +55,7 @@ const LoginPage = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border border-gray-300 rounded placeholder-gray-600"
+          className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
           required
         />
         <button
