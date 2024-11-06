@@ -1,9 +1,28 @@
 "use client";
+
 import Link from "next/link";
-import { useUserContext } from "../context/UserContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { logoutUser } from "../../../lib/auth";
 
 const TopBar = () => {
-  const { isLoggedIn, logout } = useUserContext();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleAuthButtonClick = () => {
+    if (isLoggedIn) {
+      logoutUser();
+      setIsLoggedIn(false);
+      router.push("/");
+    } else {
+      router.push("/login");
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-gray-800 shadow-md z-50">
@@ -14,15 +33,9 @@ const TopBar = () => {
         <div className="space-x-4">
           <Link href="/listings">Listings</Link>
           <Link href="/booking">Bookings</Link>
-          {isLoggedIn ? (
-            <button onClick={logout} className="text-blue-500">
-              Log out
-            </button>
-          ) : (
-            <Link href="/login" className="text-blue-500">
-              Login
-            </Link>
-          )}
+          <button onClick={handleAuthButtonClick} className="text-blue-500">
+            {isLoggedIn ? "Log out" : "Log in"}
+          </button>
         </div>
       </div>
     </nav>
