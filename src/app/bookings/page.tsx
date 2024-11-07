@@ -47,7 +47,7 @@ const BookingsPage = () => {
           bookings.map((booking) => (
             <div key={booking._id} className="border p-4 rounded shadow-md">
               <p>
-                <strong>Property:</strong> {booking.property}
+                <strong>Property:</strong> {booking.property.name}
               </p>
               <p>
                 <strong>Check-in:</strong>{" "}

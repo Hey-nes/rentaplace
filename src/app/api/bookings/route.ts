@@ -6,7 +6,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 // Helper function to get user ID from the JWT token
 const getUserIdFromToken = (token: string) => {
   try {
-    // Decode the token and assert that it is of type JwtPayload
+    // Decodes the token and assert that it is of type JwtPayload
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET as string
@@ -30,8 +30,11 @@ export async function GET(request: Request) {
   }
 
   await connectToDatabase();
-  // Fetch bookings only for the logged-in user
-  const bookings = await Booking.find({ createdBy: userId });
+  // Fetch bookings only for the logged-in user, and populate the 'property' field with the 'name' from Listing
+  const bookings = await Booking.find({ createdBy: userId }).populate(
+    "property",
+    "name"
+  ); // Populating 'property' with the 'name' of the listing
 
   return NextResponse.json(bookings);
 }
