@@ -31,7 +31,7 @@ const LoginPage = () => {
         router.push("/");
         setTimeout(() => {
           window.location.reload();
-        }, 1);
+        }, 100);
       } else console.error("Login failed");
     } catch (err: any) {
       console.error("An error occurred");

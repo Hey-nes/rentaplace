@@ -32,7 +32,7 @@ const TopBar = () => {
         </div>
         <div className="space-x-4">
           <Link href="/listings">Listings</Link>
-          <Link href="/booking">Bookings</Link>
+          <Link href="/bookings">Bookings</Link>
           <button onClick={handleAuthButtonClick} className="text-blue-500">
             {isLoggedIn ? "Log out" : "Log in"}
           </button>
