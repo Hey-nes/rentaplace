@@ -44,7 +44,7 @@ const RegisterPage = () => {
           placeholder="First Name"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
-          className="p-2 border border-gray-400 bg-gray-200 rounded placeholder-gray-600 text-gray-600"
+          className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
           required
         />
         <input
@@ -52,7 +52,7 @@ const RegisterPage = () => {
           placeholder="Last Name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
-          className="p-2 border border-gray-400 bg-gray-200 rounded placeholder-gray-600 text-gray-600"
+          className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
           required
         />
         <input
@@ -60,7 +60,7 @@ const RegisterPage = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border border-gray-400 bg-gray-200 rounded placeholder-gray-600 text-gray-600"
+          className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
           required
         />
         <input
@@ -68,7 +68,7 @@ const RegisterPage = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border border-gray-400 bg-gray-200 rounded placeholder-gray-600 text-gray-600"
+          className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
           required
         />
         <button
