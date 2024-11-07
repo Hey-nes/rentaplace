@@ -42,6 +42,7 @@ const RegisterPage = () => {
         <input
           type="text"
           placeholder="First Name"
+          maxLength={50}
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
@@ -50,6 +51,7 @@ const RegisterPage = () => {
         <input
           type="text"
           placeholder="Last Name"
+          maxLength={50}
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
@@ -58,6 +60,7 @@ const RegisterPage = () => {
         <input
           type="email"
           placeholder="Email"
+          maxLength={50}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
@@ -66,6 +69,7 @@ const RegisterPage = () => {
         <input
           type="password"
           placeholder="Password"
+          maxLength={50}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"

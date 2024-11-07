@@ -55,6 +55,18 @@ const ListingsPage = () => {
     pricePerNight: 0,
     availability: true,
   });
+  const [showBookingForm, setShowBookingForm] = useState<boolean>(false);
+  const [bookingData, setBookingData] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    checkinDate: "",
+    checkoutDate: "",
+  });
+  const [currentListing, setCurrentListing] = useState<Listing | null>(null);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -83,6 +95,31 @@ const ListingsPage = () => {
     fetchListings();
   }, []);
 
+  // Hook to calculate total price of bookings
+  useEffect(() => {
+    if (
+      !currentListing ||
+      !bookingData.checkinDate ||
+      !bookingData.checkoutDate
+    ) {
+      setTotalPrice(0); // Resets if dates or listing are missing
+      return;
+    }
+
+    const checkin = new Date(bookingData.checkinDate);
+    const checkout = new Date(bookingData.checkoutDate);
+    const nights =
+      (checkout.getTime() - checkin.getTime()) / (1000 * 3600 * 24);
+
+    // Ensure nights is positive before calculating
+    if (nights > 0) {
+      setTotalPrice(nights * currentListing.pricePerNight);
+    } else {
+      setTotalPrice(0); // Prevent negative or zero total price
+    }
+  }, [bookingData.checkinDate, bookingData.checkoutDate, currentListing]);
+
+  //Listing related functions
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setListingFormData((prev) => ({
@@ -181,6 +218,54 @@ const ListingsPage = () => {
     }
   };
 
+  //Booking related functions
+  const handleBooking = (listing: Listing) => {
+    setCurrentListing(listing);
+    setShowBookingForm(true);
+  };
+
+  const handleBookingFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setBookingData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleBookingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token || !userId || !currentListing) return;
+
+    const bookingPayload = {
+      customer: {
+        firstName: bookingData.firstName,
+        lastName: bookingData.lastName,
+        phone: bookingData.phone,
+        email: bookingData.email,
+      },
+      createdDate: new Date().toISOString(),
+      checkinDate: bookingData.checkinDate,
+      checkoutDate: bookingData.checkoutDate,
+      totalPrice,
+      createdBy: userId,
+      property: currentListing._id,
+    };
+
+    const response = await fetch("/api/bookings", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(bookingPayload),
+    });
+
+    if (response.ok) {
+      setShowBookingForm(false);
+      console.log("Booking successful!");
+    } else {
+      console.error("Booking failed.");
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Listings</h1>
@@ -203,22 +288,26 @@ const ListingsPage = () => {
             >
               {listing.availability ? "Available" : "Not Available"}
             </p>
-            {isLoggedIn && (listing.userId === userId || isAdmin) && (
+            {isLoggedIn && (
               <div className="flex space-x-4 mt-2">
+                {(listing.userId === userId || isAdmin) && (
+                  <>
+                    <button
+                      onClick={() => handleEditClick(listing)}
+                      className="bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(listing._id)}
+                      className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
                 <button
-                  onClick={() => handleEditClick(listing)}
-                  className="bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(listing._id)}
-                  className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-                <button
-                  onClick={() => router.push("/bookings")}
+                  onClick={() => handleBooking(listing)}
                   className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                 >
                   Book
@@ -238,6 +327,7 @@ const ListingsPage = () => {
             id="name"
             name="name"
             type="text"
+            maxLength={50}
             value={listingFormData.name}
             onChange={handleFormChange}
             placeholder="Name"
@@ -248,6 +338,7 @@ const ListingsPage = () => {
             id="description"
             name="description"
             type="text"
+            maxLength={50}
             value={listingFormData.description}
             onChange={handleFormChange}
             placeholder="Description"
@@ -258,6 +349,7 @@ const ListingsPage = () => {
             id="city"
             name="city"
             type="text"
+            maxLength={50}
             value={listingFormData.city}
             onChange={handleFormChange}
             placeholder="City"
@@ -295,6 +387,72 @@ const ListingsPage = () => {
             className="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-full"
           >
             {isEditing ? "Save Changes" : "Submit"}
+          </button>
+        </form>
+      </Modal>
+
+      <Modal isOpen={showBookingForm} onClose={() => setShowBookingForm(false)}>
+        <form onSubmit={handleBookingSubmit} className="space-y-4">
+          <h2 className="text-xl font-semibold mb-4">
+            Book {currentListing?.name}
+          </h2>
+          <input
+            name="firstName"
+            placeholder="First Name"
+            type="text"
+            maxLength={50}
+            onChange={handleBookingFormChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            name="lastName"
+            placeholder="Last Name"
+            type="text"
+            maxLength={50}
+            onChange={handleBookingFormChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            name="phone"
+            placeholder="Phone"
+            type="tel"
+            pattern="[0-9]{10}"
+            maxLength={10}
+            onChange={handleBookingFormChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            name="email"
+            placeholder="Email"
+            type="email"
+            maxLength={50}
+            onChange={handleBookingFormChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            name="checkinDate"
+            type="date"
+            onChange={handleBookingFormChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <input
+            name="checkoutDate"
+            type="date"
+            onChange={handleBookingFormChange}
+            required
+            className="w-full p-2 border rounded"
+          />
+          <p className="font-semibold">Total Price: ${totalPrice}</p>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded w-full"
+          >
+            Confirm Booking
           </button>
         </form>
       </Modal>

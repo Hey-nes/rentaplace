@@ -45,6 +45,7 @@ const LoginPage = () => {
         <input
           type="email"
           placeholder="Email"
+          maxLength={50}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
@@ -53,6 +54,7 @@ const LoginPage = () => {
         <input
           type="password"
           placeholder="Password"
+          maxLength={50}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="p-2 border border-gray-300 rounded placeholder-gray-600 text-gray-600"
